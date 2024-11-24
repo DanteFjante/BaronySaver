@@ -76,9 +76,8 @@ else
 
       if(save.IsOverwritten())
       {
-        writer.WriteLine($"File {save.Name} has been overwritten. Restoring file as new save");
-        save.Rename(NewSaveName(saves));
-        save.Restore();
+        writer.WriteLine($"File {save.Name} has been overwritten. Assuming that you did not want to save last game.");
+        saveGamesToDelete.Add(save);
       }
     }
 
