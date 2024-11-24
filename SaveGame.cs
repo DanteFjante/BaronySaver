@@ -9,7 +9,7 @@ namespace Barony_Saver
 {
   public class SaveGame
   {
-    public readonly string Path;
+    public string Path { get; private set; }
     public readonly byte[] Bytes;
     public readonly DateTime LastWriteTime;
 
@@ -54,6 +54,11 @@ namespace Barony_Saver
     public void Restore()
     {
       File.WriteAllBytes(Path, Bytes);
+    }
+
+    public void Rename(string newName)
+    {
+      Path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Path), newName);
     }
   }
 }

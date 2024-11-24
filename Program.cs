@@ -4,7 +4,7 @@ using Barony_Saver;
 using System.Diagnostics;
 
 ConsoleWriter writer = new ConsoleWriter();
-writer.AddLine("Barony Saver 1.0 by DanteFjante");
+writer.AddLineWithoutTimeStamp("Barony Saver 1.1 by DanteFjante");
 
 var process = FindBaronyProcess();
 
@@ -73,6 +73,13 @@ else
         writer.WriteLine($"File {save.Name} has been deleted. Restoring file");
         save.Restore();
       }
+
+      if(save.IsOverwritten())
+      {
+        writer.WriteLine($"File {save.Name} has been overwritten. Restoring file as new save");
+        save.Rename(NewSaveName(saves));
+        save.Restore();
+      }
     }
 
     foreach(var save in savesToUpdate)
@@ -88,8 +95,30 @@ else
     Task.Delay(1000 * delay).Wait();
   }
 
-  writer.WriteLine("Barony has closed. Closing the program");
+  writer.WriteLine($"Barony has closed. Closing the program");
   return;
+}
+
+static string NewSaveName(List<SaveGame> saves)
+{
+  int highest = HighestSave(saves);
+  return $"savegame{highest + 1}.baronysave";
+}
+
+static int HighestSave(List<SaveGame> saves)
+{
+  int highest = 0;
+  foreach (var save in saves)
+  {
+    string fileName = Path.GetFileNameWithoutExtension(save.Name);
+    string iteration = fileName.Replace("savegame", "");
+    int.TryParse(iteration, out int number);
+    if (number > highest)
+    {
+      highest = number;
+    }
+  }
+  return highest;
 }
 
 static Process? FindBaronyProcess()
